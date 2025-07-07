@@ -5,6 +5,7 @@ package koreaderinspector
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -75,6 +76,23 @@ func (client *HTTPInspectorClient) SSHIsRunning() (bool, error) {
 		return false, err
 	}
 	return body[0], nil
+}
+
+func (client *HTTPInspectorClient) ToggleNightMode() error {
+	_, err := client.Get("/event/ToggleNightMode")
+	return err
+}
+
+func (client *HTTPInspectorClient) SetNightMode(nightMode bool) error {
+	_, err := client.Get(
+		fmt.Sprintf("/event/SetNightMode/%v", nightMode),
+	)
+	return err
+}
+
+func (client *HTTPInspectorClient) FullRefresh() error {
+	_, err := client.Get("/event/FullRefresh")
+	return err
 }
 
 func New(baseURL string) (*HTTPInspectorClient, error) {

@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	koreaderinspector "github.com/Consoleaf/koreaderinspector"
-	"github.com/Consoleaf/koreaderinspector/testutils"
-	"github.com/Consoleaf/koreaderinspector/utils"
+	koreaderinspector "github.com/Consoleaf/koreader-http-inspector"
+	"github.com/Consoleaf/koreader-http-inspector/testutils"
+	"github.com/Consoleaf/koreader-http-inspector/utils"
 )
 
 func Test_GetVersion(t *testing.T) {
@@ -46,6 +46,15 @@ func Test_Restart(t *testing.T) {
 			return a.URL.Path
 		}))
 	}
+}
+
+func Test_FullRefresh(t *testing.T) {
+	WithDifferentClients(t, func(t *testing.T, httpInspector *koreaderinspector.HTTPInspectorClient) {
+		err := httpInspector.FullRefresh()
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
 }
 
 func Test_SSH(t *testing.T) {
@@ -165,6 +174,9 @@ func (fakeClient *FakeHTTPClient) handleRequest(r *http.Request) (string, error)
 		return "2222", nil
 	case "/koreader/ui/SSH/stop/":
 		fakeClient.sshRunning = false
+		return "", nil
+	case "/koreader/event/ToggleNightMode":
+	case "/koreader/event/FullRefresh":
 		return "", nil
 	}
 	return "", ErrNotFound
