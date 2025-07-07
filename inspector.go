@@ -95,6 +95,21 @@ func (client *HTTPInspectorClient) FullRefresh() error {
 	return err
 }
 
+func (client *HTTPInspectorClient) TurnPageBy(amount int) error {
+	_, err := client.Get(
+		fmt.Sprintf("/event/GotoViewRel/%d", amount),
+	)
+	return err
+}
+
+func (client *HTTPInspectorClient) NextPage() error {
+	return client.TurnPageBy(1)
+}
+
+func (client *HTTPInspectorClient) PrevPage() error {
+	return client.TurnPageBy(-1)
+}
+
 func New(baseURL string) (*HTTPInspectorClient, error) {
 	return NewWithClient(baseURL, http.DefaultClient)
 }

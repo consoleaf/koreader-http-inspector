@@ -57,6 +57,24 @@ func Test_FullRefresh(t *testing.T) {
 	})
 }
 
+func Test_NextPage(t *testing.T) {
+	WithDifferentClients(t, func(t *testing.T, httpInspector *koreaderinspector.HTTPInspectorClient) {
+		err := httpInspector.NextPage()
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+}
+
+func Test_PrevPage(t *testing.T) {
+	WithDifferentClients(t, func(t *testing.T, httpInspector *koreaderinspector.HTTPInspectorClient) {
+		err := httpInspector.PrevPage()
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+}
+
 func Test_SSH(t *testing.T) {
 	WithDifferentClients(t, func(t *testing.T, httpInspector *koreaderinspector.HTTPInspectorClient) {
 		defer httpInspector.SSHStop()
