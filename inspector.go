@@ -54,6 +54,19 @@ func (client *HTTPInspectorClient) SSHGetPort() (int, error) {
 	return strconv.Atoi(string(res))
 }
 
+func (client *HTTPInspectorClient) SSHGetAllowNoPassword() (bool, error) {
+	res, err := client.Get("ui/SSH/allow_no_password")
+	if err != nil {
+		return false, err
+	}
+	return strconv.ParseBool(string(res))
+}
+
+func (client *HTTPInspectorClient) SSHSetAllowNoPassword(allow bool) error {
+	_, err := client.Get(fmt.Sprintf("ui/SSH/allow_no_password?=%v", allow))
+	return err
+}
+
 func (client *HTTPInspectorClient) SSHStop() error {
 	_, err := client.Get("/ui/SSH/stop/")
 	if err != nil {
