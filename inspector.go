@@ -76,8 +76,8 @@ func (client *HTTPInspectorClient) SSHStop() error {
 	if err != nil {
 		return err
 	}
-	if !isRunning {
-		return HTTPInspectorClientError{message: "SSH is not running after calling /ui/ssh/start/"}
+	if isRunning {
+		return HTTPInspectorClientError{message: "SSH is running after calling /ui/ssh/stop/"}
 	}
 	return nil
 }
