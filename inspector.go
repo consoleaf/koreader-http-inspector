@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -20,7 +20,7 @@ type HTTPClient interface {
 type HTTPInspectorClient struct {
 	client  HTTPClient
 	baseURL string
-	Logger  log.Logger
+	Logger  slog.Logger
 }
 
 type HTTPInspectorClientError struct {
@@ -132,7 +132,7 @@ func NewWithClient(baseURL string, client HTTPClient) (*HTTPInspectorClient, err
 	return &HTTPInspectorClient{
 		client:  client,
 		baseURL: uri,
-		Logger:  *log.Default(),
+		Logger:  *slog.Default(),
 	}, err
 }
 
@@ -145,20 +145,20 @@ func (client *HTTPInspectorClient) GetWithQuery(path string, query string) ([]by
 }
 
 func (client *HTTPInspectorClient) Get(path string) ([]byte, error) {
-	client.Logger.Printf("[HTTPInspectorClient] GET %v", path)
+	client.Logger.Debug(fmt.Sprintf("[HTTPInspectorClient] GET %v", path))
 	url, err := url.JoinPath(client.baseURL, path)
 	if err != nil {
-		client.Logger.Printf("[HTTPInspectorClient] ERROR on GET %v: %v", path, err)
+		client.Logger.Error(fmt.Sprintf("[HTTPInspectorClient] ERROR on GET %v: %v", path, err))
 		return nil, err
 	}
 	res, err := client.client.Get(url)
 	if err != nil {
-		client.Logger.Printf("[HTTPInspectorClient] ERROR on GET %v: %v", path, err)
+		client.Logger.Debug(fmt.Sprintf("[HTTPInspectorClient] ERROR on GET %v: %v", path, err))
 		return []byte{}, err
 	}
 	defer res.Body.Close()
 	buf, err := io.ReadAll(res.Body)
-	client.Logger.Printf("[HTTPInspectorClient] RESPONSE on GET %v: %v", path, string(buf))
+	client.Logger.Debug(fmt.Sprintf("[HTTPInspectorClient] RESPONSE on GET %v: %v", path, string(buf)))
 	return buf, err
 }
 
